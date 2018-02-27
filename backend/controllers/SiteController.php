@@ -6,53 +6,13 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\models\Review;
 
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends BaseController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-        ];
-    }
-
     /**
      * Displays homepage.
      *
@@ -60,8 +20,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-echo 'admin';
-        return $this->render('index');
+        $reviews_cnt = Review::getNotPublishedCnt();
+        return $this->render('index', [
+            'reviews_cnt' => $reviews_cnt,
+        ]);
     }
 
     /**
@@ -77,9 +39,9 @@ echo 'admin';
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->redirect(['index']);
         } else {
-            return $this->render('login', [
+            return $this->renderPartial('login', [
                 'model' => $model,
             ]);
         }

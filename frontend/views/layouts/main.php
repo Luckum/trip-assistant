@@ -4,11 +4,15 @@
 /* @var $content string */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use common\models\Page;
+use common\models\Service;
+use common\models\Review;
 
 AppAsset::register($this);
 ?>
@@ -27,53 +31,61 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
-
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+    <div class="header">
+        <a class="home-link" href="<?= Url::to(['/']) ?>"><?= Yii::$app->params['siteName']; ?></a>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="left-menu">
+            <div class="menu-item">
+                <div class="menu-item-inner">
+                    <a href="<?= Url::to(['/about']); ?>">About Us</a>
+                </div>
+            </div>
+            <?php $services = Service::find()->orderBy('priority ASC')->all(); ?>
+            <?php if ($services): ?>
+                <?php foreach ($services as $service): ?>
+                    <div class="menu-item">
+                        <div class="menu-item-inner">
+                            <a href="<?= Url::to(['/service/' . $service->slug]); ?>"><?= $service->name; ?></a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <div class="container col-md-6">
+        <div class="content-text">
+            <?= $content ?>
+        </div>
+    </div>
+    
+    <div class="col-md-3" style="margin-bottom: 20px;;">
+        <?php if (Yii::$app->controller->id != 'review'): ?>
+            <div class="reviews-right">
+                <strong>Reviews:</strong>
+                <?php $reviews = Review::getLastReviews(); ?>
+                <?php if ($reviews): ?>
+                    <?php foreach ($reviews as $review): ?>
+                        <div class="review-item">
+                            <strong><?= date('j F Y', strtotime($review->published_at)) . ", "; ?></strong>
+                            <strong><?= $review->author; ?></strong>
+                            <div>
+                                <?= $review->message; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                    <p><a href="<?= Url::to(['/review']); ?>">See all reviews...</a></p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
-<footer class="footer">
+<footer class="footer col-md-12">
     <div class="container">
-        <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <b>e-mail:</b> <a href="mailto:<?= Yii::$app->params['infoEmail']; ?>"><?= Yii::$app->params['infoEmail']; ?></a> <b>tel.:</b> <?= Yii::$app->params['phone']; ?>
     </div>
 </footer>
 
