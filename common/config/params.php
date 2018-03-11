@@ -7,5 +7,5 @@ return [
     'phone' => '+7 918 11 37 818',
     
     'payment_multicard_url' => 'https://secure.multicards.com/cgi-bin/order2/processorder1.pl',
-    'payment_multicard_mer_id' => '',
+    'payment_multicard_mer_id' => '181725',
 ];

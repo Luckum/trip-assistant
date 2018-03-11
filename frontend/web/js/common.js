@@ -1,28 +1,3 @@
-$(document).ready(function() {
-    $.ajax({
-        url: "/service/get-formula",
-        type: "POST",
-        data: {s_id: $("#service-id-txt").val()},
-        success: function(data) {
-            if (data.formula) {
-                var fields = JSON.parse(data.formula);
-                $.each(fields, function() {
-                    if (typeof(this.field_id) !== 'undefined') {
-                        if ($.type(this.field_id) == 'object') {
-                            $("#" + this.field_id.field_id).attr('onchange', 'getTotal()');
-                        } else {
-                            $("#" + this.field_id).attr('onchange', 'getTotal()');
-                        }
-                    } else if (typeof(this.related) !== 'undefined') {
-                        $("#" + this.related.field_1).attr('onchange', 'getTotal()');
-                        $("#" + this.related.field_2).attr('onchange', 'getTotal()');
-                    }
-                });
-            }
-        }
-    });
-});
-
 function getTotal()
 {
     $.ajax({
@@ -99,7 +74,7 @@ function parseFormula(formula)
     } else {
         //console.log("not checked");
     }
-    $("#service-total").html(total);
+    $("#service-total").html("$" + total);
     $("#service-total-price").val(total);
 }
 
@@ -117,6 +92,9 @@ function parseFormulaDirect(formula, res, por_step, por_idx)
                             if ($("#" + formula[i - 1].field_id.field_id + " option:selected").attr("id") == opt[0]) {
                                 var res1 = opt[1];
                             }
+                        }
+                        if (typeof(res1) === "undefined") {
+                            var res1 = 0;
                         }
                     }
                     if (formula[i - 1].field_id.option_sign == 'multiply') {
@@ -235,3 +213,4 @@ function parseFormulaDirect(formula, res, por_step, por_idx)
     }
     return res;
 }
+

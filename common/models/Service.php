@@ -45,6 +45,14 @@ class Service extends \yii\db\ActiveRecord
             'priority' => 'Приоритет',
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['service_id' => 'id']);
+    }
     
      
      /**

@@ -86,6 +86,7 @@ AppAsset::register($this);
 <footer class="footer col-md-12">
     <div class="container">
         <b>e-mail:</b> <a href="mailto:<?= Yii::$app->params['infoEmail']; ?>"><?= Yii::$app->params['infoEmail']; ?></a> <b>tel.:</b> <?= Yii::$app->params['phone']; ?>
+        <p>Suite 1, 4 Queen Street, Edinburgh, EH2 1JE, Scotland, UK</p>
     </div>
 </footer>
 

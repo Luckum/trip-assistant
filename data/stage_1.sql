@@ -63,3 +63,27 @@ CREATE TABLE IF NOT EXISTS `service_content_price` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `order` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `service_id` int(11) NOT NULL,
+    `total` decimal(15,2) NOT NULL,
+    `user_email` varchar(100) NOT NULL,
+    `user_name` varchar(100) NOT NULL,
+    `user_phone` varchar(20) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `order_status` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `order_id` int(11) NOT NULL,
+    `response_code` tinyint(1) NOT NULL,
+    `response_text` varchar(100) NOT NULL,
+    `error` text default null,
+    `order_num` varchar(15) default null,
+    `billing_name` varchar(255) default null,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
